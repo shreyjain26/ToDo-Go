@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func main() {
 
 	todos := Todos{}
@@ -9,9 +7,7 @@ func main() {
 	todos.add("Buy Milk")
 	todos.add("Buy bread")
 
-	fmt.Printf("%+v\n\n", todos) // %+v is used to print the struct with field names and values.
+	todos.toggle(1)
 
-	todos.delete(0)
-
-	fmt.Printf("%+v\n\n", todos)
+	todos.print()
 }

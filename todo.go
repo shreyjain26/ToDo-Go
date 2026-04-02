@@ -3,7 +3,11 @@ package main
 import (
 	"errors"
 	"fmt"
+	"os"
+	"strconv"
 	"time"
+
+	"github.com/aquasecurity/table"
 )
 
 // declaring a struct for our todo item.
@@ -50,4 +54,62 @@ func (todos *Todos) delete(index int) error {
 	*todos = append(t[:index], t[index+1:]...) // This line modifies the original Todos struct instance by slicing the local copy t to exclude the element at the specified index and then appending the remaining elements back to the original Todos slice. The ... is used to unpack the elements of the sliced portion of t so that they can be appended correctly to the original Todos slice.
 
 	return nil
+}
+
+func (todos *Todos) toggle(index int) error {
+
+	t := *todos
+
+	if err := t.validateIndex(index); err != nil {
+		return err
+	}
+
+	isCompleted := t[index].Completed
+
+	if !isCompleted {
+		now := time.Now()
+		t[index].Completed_at = &now
+	} else {
+		t[index].Completed_at = nil
+	}
+
+	t[index].Completed = !isCompleted
+
+	return nil
+}
+
+func (todos *Todos) edit(index int, title string) error {
+
+	t := *todos
+
+	if err := t.validateIndex(index); err != nil {
+		return err
+	}
+
+	t[index].Title = title
+
+	return nil
+}
+
+func (todos *Todos) print() {
+
+	table := table.New(os.Stdout)
+
+	table.SetRowLines(false)
+	table.SetHeaders("#", "Title", "Completed", "Created At", "Completed At")
+
+	for index, todo := range *todos {
+		completed := "❌"
+		completedAt := ""
+
+		if todo.Completed {
+			completed = "✅"
+			completedAt = todo.Completed_at.Format(time.RFC1123)
+		}
+
+		table.AddRow(strconv.Itoa(index), todo.Title, completed, todo.Created_at.Format(time.RFC1123), completedAt)
+	}
+
+	table.Render()
+
 }
