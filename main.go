@@ -3,11 +3,11 @@ package main
 func main() {
 
 	todos := Todos{}
+	Storage := NewStorage[Todos]("todos.json")
 
-	todos.add("Buy Milk")
-	todos.add("Buy bread")
-
-	todos.toggle(1)
+	Storage.Load(&todos)
 
 	todos.print()
+
+	Storage.Save(todos)
 }
