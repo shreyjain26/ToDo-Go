@@ -80,13 +80,11 @@ func (todos *Todos) toggle(index int) error {
 
 func (todos *Todos) edit(index int, title string) error {
 
-	t := *todos
-
-	if err := t.validateIndex(index); err != nil {
+	if err := todos.validateIndex(index); err != nil {
 		return err
 	}
 
-	t[index].Title = title
+	(*todos)[index].Title = title
 
 	return nil
 }
